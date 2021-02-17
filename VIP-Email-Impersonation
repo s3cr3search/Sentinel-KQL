@@ -1,0 +1,11 @@
+VIP Email Impersontion
+This will detect attempts to impersonate VIP users using display names.
+
+EmailEvents
+| where SenderDisplayName in ({enter VIP display names})
+//excludes internal emails
+| where SenderFromDomain !contains "{own domains}" and SenderFromDomain !contains "sharepointonline.com"
+//Excluding personal emails
+| where SenderFromAddress !in ({enter VIP's personal emails})
+| where DeliveryAction contains "Delivered"
+| project Timestamp, SenderDisplayName, SenderFromAddress, RecipientEmailAddress ,Subject 
