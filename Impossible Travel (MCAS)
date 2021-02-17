@@ -33,10 +33,3 @@ AADNonInteractiveUserSignInLogs
 //Remove empty logs coming from MCAS logs
 | where isnotempty(IPAddress_Non) or isnotempty(IPAddress_Signin)
 | summarize arg_max(TimeGenerated, * ) by AadUserId, IP_Addresses_
-// Some parsing to get the correct information in the ServiceNow alert
-| extend Href_ = tostring(parse_json(ExtendedLinks)[1].Href)
-| extend Address_ = tostring(parse_json(Entities)[1].Address)
-| extend URLCustomEntity = Href_
-| extend AccountCustomEntity = UserPrincipalName
-| extend HostCustomEntity = Description
-| extend IPCustomEntity = Address_
