@@ -1,0 +1,3 @@
+DeviceProcessEvents
+| where FileName == "WMIC.exe" or FileName == "cmd.exe"
+| where ProcessCommandLine contains "shadowcopy" and ProcessCommandLine contains "delete"
