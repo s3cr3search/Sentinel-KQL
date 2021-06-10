@@ -1,0 +1,3 @@
+DeviceProcessEvents
+| where FileName  in ("schtasks.exe", "at.exe")
+| where ProcessCommandLine contains "regsvr32" or ProcessCommandLine contains "http:" or ProcessCommandLine contains "https:"
