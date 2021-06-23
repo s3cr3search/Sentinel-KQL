@@ -1,0 +1,19 @@
+URL clicked in Email 
+This query will detect if an url in an email has been run by a user.
+
+EmailEvents
+| where SenderFromAddress == "{Attacker Email}" 
+| where DeliveryAction =~ "Delivered"
+| extend Attacker_Email=SenderFromAddress
+| extend Attacker_Alias=SenderDisplayName
+| join EmailUrlInfo on NetworkMessageId
+| extend User_Email=RecipientEmailAddress
+| project User_Email,Url,Attacker_Email,Attacker_Alias,UrlDomain
+| join kind=inner (
+DeviceNetworkEvents
+| extend User_Device=tolower(InitiatingProcessAccountUpn)
+) 
+on $left.User_Email == $right.User_Device
+//Check to see if url has been clicked
+| where RemoteUrl has Url
+| project Attacker_Email,Attacker_Alias,User_Device,UrlDomain,DeviceName,RemoteUrl,ActionType
