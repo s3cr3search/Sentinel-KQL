@@ -1,0 +1,21 @@
+Email Attachement Clicked 
+This query will detect if an email attachement has been run by a user.
+
+EmailEvents
+| where SenderFromAddress == "{Attacker Email}"
+| where DeliveryAction =~ "Delivered"
+| extend Attacker_Email=SenderFromAddress
+| extend Attacker_Alias=SenderDisplayName
+| join EmailAttachmentInfo on NetworkMessageId
+| extend User_Email=RecipientEmailAddress
+| extend Attachment=FileName
+| where isnotempty(Attachment)
+| project User_Email,Attachment,Attacker_Email,Attacker_Alias
+| join kind=inner (
+DeviceProcessEvents
+| extend User_Device=tolower(AccountUpn)
+) 
+on $left.User_Email == $right.User_Device
+//Check to see if attachment has been opened
+| where ProcessCommandLine has Attachment
+| project Attacker_Email,Attacker_Alias,User_Device,Attachment,DeviceName,FileName,ProcessCommandLine,ActionType
