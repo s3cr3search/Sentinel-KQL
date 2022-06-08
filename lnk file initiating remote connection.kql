@@ -1,0 +1,7 @@
+DeviceNetworkEvents
+//Explorer indicates .lnk file was executed
+| where InitiatingProcessParentFileName == @"explorer.exe"
+//Powershell initiating  command
+| where InitiatingProcessFileName =~ "powershell.exe" or InitiatingProcessFileName =~ "cmd.exe"
+//detect http/https traffic
+| where InitiatingProcessCommandLine contains "http"
