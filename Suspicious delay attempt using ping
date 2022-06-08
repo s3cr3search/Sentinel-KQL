@@ -1,0 +1,5 @@
+DeviceProcessEvents 
+| where FileName =~ "cmd.exe" 
+//Look for ping amount parameter 
+| where ProcessCommandLine matches regex "-[nN] [1-9][0-9]*"  
+| where ProcessCommandLine contains "ping" 
