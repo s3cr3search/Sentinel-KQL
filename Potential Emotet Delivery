@@ -1,0 +1,16 @@
+EmailEvents
+//Extract name from email address
+| extend name = extract(@"\A[a-zA-Z][a-zA-Z\. ]*",0,RecipientEmailAddress)
+| extend format_name = replace_string(name,"."," ")
+//Add RE: & FWD: to user's name
+| extend re_format_name = strcat("re: ",format_name)
+| extend fwd_format_name = strcat("fwd: ",format_name)
+| extend re_email = strcat("re: ",RecipientEmailAddress)
+| extend fwd_email = strcat("fwd: ",RecipientEmailAddress)
+//Search in subject
+| where Subject =~ re_format_name or Subject =~ fwd_format_name or Subject =~ re_email or Subject =~ fwd_email
+| join EmailAttachmentInfo on NetworkMessageId
+//Return filetypes of interest
+| where FileName matches regex "(.docx|.xlsx|.docm|.xls|.xlsm|.ppt|.pptm|.zip)"
+//Only showed Delivered emails
+| where DeliveryAction == "Delivered"
