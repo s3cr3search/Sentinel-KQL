@@ -1,0 +1,2 @@
+//This is to be used as function to extract and decode base64 string
+base64_decode_tostring(extract(@'[A-Za-z0-9+/]{20,}[=]{0,2}',0,String))
